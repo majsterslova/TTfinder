@@ -1,0 +1,26 @@
+{
+  "name": "ttfinder",
+  "version": "1.0.0",
+  "description": "TikTok Account Country Identification Tool  An automated OSINT tool that detects the primary country or region of any TikTok account by its username. It analyzes public profile metadata, CDN video hosting origins, and regional parameters without requiring private API access or password authentication.\r # TikTok Account Country Identifier 🌍",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majsterslova/TTfinder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/majsterslova/TTfinder/issues"
+  },
+  "homepage": "https://github.com/majsterslova/TTfinder#readme",
+  "dependencies": {
+    "axios": "^1.19.0",
+    "cheerio": "^1.2.0",
+    "puppeteer": "^25.7.0"
+  }
+}
