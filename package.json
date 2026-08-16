@@ -1,16 +1,22 @@
 {
   "name": "ttfinder",
   "version": "1.0.0",
-  "description": "TikTok Account Country Identification Tool  An automated OSINT tool that detects the primary country or region of any TikTok account by its username. It analyzes public profile metadata, CDN video hosting origins, and regional parameters without requiring private API access or password authentication.\r # TikTok Account Country Identifier 🌍",
+  "description": "TikTok Account Country Identification Tool. An automated OSINT tool that detects the primary country or region of any TikTok account by its username.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/majsterslova/TTfinder.git"
   },
-  "keywords": [],
+  "keywords": [
+    "tiktok",
+    "osint",
+    "telegram-bot",
+    "country-finder"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -19,13 +25,8 @@
   },
   "homepage": "https://github.com/majsterslova/TTfinder#readme",
   "dependencies": {
-    "axios": "^1.19.0",
-    "cheerio": "^1.2.0",
-    "dotenv": "^17.4.2",
-    "node-telegram-bot-api": "^1.2.0",
-    "puppeteer": "^25.7.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "telegraf": "^4.16.3"
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
   }
 }
