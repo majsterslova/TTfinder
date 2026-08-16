@@ -1,77 +1,99 @@
-const puppeteer = require('puppeteer');
+const TelegramBotRaw = require('node-telegram-bot-api');
+const TelegramBot = TelegramBotRaw.default || TelegramBotRaw;
+const axios = require('axios');
 
-/**
- * Отримує регіон/країну акаунта TikTok через headless-браузер
- * @param {string} username - Нікнейм користувача без символу @
- */
-async function getTikTokRegion(username) {
-  const cleanUsername = username.replace(/^@/, '');
-  const url = `https://www.tiktok.com/@${cleanUsername}`;
+const TELEGRAM_TOKEN = '8564921240:AAETS_mt9fgscbab0SYV9jOivAkCmgipFEs';
+// Ваш ключ із зображення:
+const RAPIDAPI_KEY = '2cbdefede7msh9f1904901697b7cp1363d4jsn3d6cebf68f73';
 
-  let browser;
+const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+
+console.log('🤖 Бот на RapidAPI успішно запущений...');
+
+function getFullCountryName(code, lang = 'uk') {
+  if (!code) return 'Невідомо';
   try {
-    // Запускаємо фоновий браузер
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=en-US']
-    });
+    const regionNames = new Intl.DisplayNames([lang], { type: 'region' });
+    return regionNames.of(code.toUpperCase());
+  } catch (error) {
+    return code;
+  }
+}
 
-    const page = await browser.newPage();
+async function getTikTokProfileViaAPI(username) {
+  const cleanUsername = username.replace(/^@/, '').trim();
 
-    // Підставляємо заголовки та роздільну здатність екрана реального пристрою
-    await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-    );
-    await page.setViewport({ width: 1280, height: 800 });
+  const options = {
+    method: 'GET',
+    url: 'https://tiktok-api23.p.rapidapi.com/api/user/info',
+    params: { uniqueId: cleanUsername },
+    headers: {
+      'x-rapidapi-key': RAPIDAPI_KEY,
+      'x-rapidapi-host': 'tiktok-api23.p.rapidapi.com'
+    }
+  };
 
-    // Переходимо на сторінку
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  try {
+    const response = await axios.request(options);
+    const userInfo = response.data?.userInfo?.user;
+    const userStats = response.data?.userInfo?.stats;
 
-    // Витягуємо дані з запущеної DOM-структури сторінки
-    const resultData = await page.evaluate(() => {
-      const html = document.documentElement.innerHTML;
-
-      // Пошук країни за внутрішніми тегами TikTok
-      const regionMatch =
-        html.match(/"region":"([A-Z]{2})"/i) ||
-        html.match(/"locationCreated":"([A-Z]{2})"/i) ||
-        html.match(/"storeRegion":"([A-Z]{2})"/i);
-
-      const nicknameMatch = html.match(/"nickname":"([^"]+)"/i);
-
-      return {
-        region: regionMatch ? regionMatch[1] : null,
-        nickname: nicknameMatch ? nicknameMatch[1] : null
-      };
-    });
-
-    await browser.close();
-
-    if (resultData.region) {
-      return {
-        success: true,
-        username: cleanUsername,
-        nickname: resultData.nickname || cleanUsername,
-        region: resultData.region
-      };
+    if (!userInfo) {
+      throw new Error('Користувача не знайдено');
     }
 
-    throw new Error(`Регіон не знайдено (можливо, з'явилася візуальна CAPTCHA).`);
+    const countryCode = userInfo.region || userInfo.storeRegion || userInfo.locationCreated;
 
+    return {
+      success: true,
+      username: userInfo.uniqueId,
+      nickname: userInfo.nickname,
+      countryCode: countryCode,
+      countryName: getFullCountryName(countryCode, 'uk'),
+      followers: userStats?.followerCount || 0,
+      avatar: userInfo.avatarLarger
+    };
   } catch (error) {
-    if (browser) await browser.close();
     return {
       success: false,
-      error: error.message
+      error: error.response?.data?.message || error.message || 'Помилка запиту'
     };
   }
 }
 
-// Тестовий запуск
-(async () => {
-  const targetUser = 'tiktok';
-  console.log(`Скануємо акаунт через браузер: @${targetUser}...`);
+bot.onText(/\/start/, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    '👋 Привіт! Надішли мені нікнейм TikTok (наприклад: `mrbeast`), і я скажу точну країну акаунта.',
+    { parse_mode: 'Markdown' }
+  );
+});
 
-  const result = await getTikTokRegion(targetUser);
-  console.log('Результат:', result);
-})();
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const text = msg.text ? msg.text.trim() : '';
+
+  if (text.startsWith('/')) return;
+
+  bot.sendMessage(chatId, `🔍 Шукаю дані для **${text}**...`, { parse_mode: 'Markdown' });
+
+  const result = await getTikTokProfileViaAPI(text);
+
+  if (result.success) {
+    const responseText = 
+`✅ **Точна інформація про акаунт:**
+
+👤 **Нікнейм:** @${result.username}
+📛 **Ім'я:** ${result.nickname}
+🌍 **Країна:** ${result.countryName} (${result.countryCode || 'N/A'})
+👥 **Підписники:** ${result.followers.toLocaleString()}`;
+
+    if (result.avatar) {
+      bot.sendPhoto(chatId, result.avatar, { caption: responseText, parse_mode: 'Markdown' });
+    } else {
+      bot.sendMessage(chatId, responseText, { parse_mode: 'Markdown' });
+    }
+  } else {
+    bot.sendMessage(chatId, `❌ **Помилка:** ${result.error}`, { parse_mode: 'Markdown' });
+  }
+});
