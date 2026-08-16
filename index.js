@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: '.env.txt' });
 
 const TelegramBotRaw = require('node-telegram-bot-api');
 const TelegramBot = TelegramBotRaw.default || TelegramBotRaw;
