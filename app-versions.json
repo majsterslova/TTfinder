@@ -1,4 +1,4 @@
 {
-  "driver": { "latestBuildId": 2, "apkUrl": "", "notes": "" },
-  "rider": { "latestBuildId": 2, "apkUrl": "", "notes": "" }
+  "driver": { "latestBuildId": 2, "apkUrl": "https://github.com/majsterslova/muraha_driver/actions/runs/38810015645/artifacts/12009601110", "notes": "Чат, стрілка, сигнал, контакти" },
+  "rider": { "latestBuildId": 2, "apkUrl": "https://github.com/majsterslova/muraha_user/actions/runs/38810106675/artifacts/12009580391", "notes": "Чат, оцінки, улюблені місця" }
 }
