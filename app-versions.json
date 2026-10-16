@@ -1,12 +1,1 @@
-{
-  "driver": {
-    "latestBuildId": 4,
-    "apkUrl": "https://github.com/majsterslova/muraha_driver/actions/runs/38903594616/artifacts/12048551488",
-    "notes": "Маркер зменшено — нормальний розмір"
-  },
-  "rider": {
-    "latestBuildId": 2,
-    "apkUrl": "https://github.com/majsterslova/muraha_user/actions/runs/38810106675/artifacts/12009580391",
-    "notes": "Чат, оцінки, улюблені місця"
-  }
-}
+{"driver":{"apkUrl":"https://github.com/majsterslova/muraha_driver/actions/runs/38951521398/artifacts/12070616265","latestBuildId":5,"notes":"Навігаторний курс стрілки, фраза про ремінь, маркер +30%"},"rider":{"apkUrl":"https://github.com/majsterslova/muraha_user/actions/runs/38951999630/artifacts/12070331894","latestBuildId":3,"notes":"Прибуття й очікування, фікс скасування, меню акаунта, профіль, оплата"}}
