@@ -1,8 +1,8 @@
 {
   "driver": {
-    "latestBuildId": 3,
-    "apkUrl": "https://github.com/majsterslova/muraha_driver/actions/runs/38821497533/artifacts/12013579738",
-    "notes": "Маркер-картинка, плавність, сигнал, контакти"
+    "latestBuildId": 4,
+    "apkUrl": "https://github.com/majsterslova/muraha_driver/actions/runs/38903594616/artifacts/12048551488",
+    "notes": "Маркер зменшено — нормальний розмір"
   },
   "rider": {
     "latestBuildId": 2,
